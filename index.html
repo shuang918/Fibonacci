@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fibonacci Christmas Clock</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #0d2412 0%, #152f15 100%);
+            color: #f0f7f0;
+            font-family: 'Arial', sans-serif;
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+        
+        /* 圣诞装饰元素 */
+        .snowflake {
+            position: absolute;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 20px;
+            user-select: none;
+            z-index: 1;
+        }
+        
+        .ornament {
+            position: absolute;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            z-index: 1;
+        }
+        
+        .ornament.red { background: radial-gradient(circle at 30% 30%, #ff6b6b, #a8323e); }
+        .ornament.green { background: radial-gradient(circle at 30% 30%, #8fcf9f, #2d6a4f); }
+        .ornament.gold { background: radial-gradient(circle at 30% 30%, #ffd700, #d4b56a); }
+        
+        .christmas-tree {
+            position: absolute;
+            width: 0;
+            height: 0;
+            border-left: 25px solid transparent;
+            border-right: 25px solid transparent;
+            border-bottom: 40px solid #2d6a4f;
+            z-index: 1;
+        }
+        
+        .christmas-tree::before {
+            content: '';
+            position: absolute;
+            top: 10px;
+            left: -20px;
+            width: 0;
+            height: 0;
+            border-left: 20px solid transparent;
+            border-right: 20px solid transparent;
+            border-bottom: 30px solid #3a7a5a;
+        }
+        
+        .christmas-tree::after {
+            content: '';
+            position: absolute;
+            top: 25px;
+            left: -15px;
+            width: 0;
+            height: 0;
+            border-left: 15px solid transparent;
+            border-right: 15px solid transparent;
+            border-bottom: 20px solid #4a8a6a;
+        }
+        
+        .container {
+            display: flex;
+            width: 95vw;
+            min-height: 90vh;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            padding: 30px;
+            border: 2px solid #a8323e;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            margin: 20px auto;
+            position: relative;
+            z-index: 2;
+            backdrop-filter: blur(10px);
+        }
+        
+        /* 横屏布局 */
+        @media (orientation: landscape) {
+            .container {
+                flex-direction: row;
+            }
+            
+            .left-panel {
+                flex: 1;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                padding-right: 30px;
+                border-right: 1px solid rgba(255, 255, 255, 0.08);
+            }
+            
+            .right-panel {
+                flex: 1;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                padding-left: 30px;
+            }
+            
+            .fibonacci-clock {
+                width: 400px;
+                height: 250px;
+            }
+        }
+        
+        /* 竖屏布局 */
+        @media (orientation: portrait) {
+            .container {
+                flex-direction: column;
+                min-height: auto;
+            }
+            
+            .left-panel, .right-panel {
+                padding: 20px;
+                border: none;
+            }
+            
+            .left-panel {
+                border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            }
+            
+            .fibonacci-clock {
+                width: 320px;
+                height: 200px;
+            }
+            
+            .legend {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+        
+        .clock-container {
+            text-align: center;
+            width: 100%;
+        }
+        
+        .title-section {
+            margin-bottom: 20px;
+        }
+        
+        h1 {
+            font-size: 2.2rem;
+            margin-bottom: 5px;
+            color: #f8f8f8;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        
+        .author {
+            font-size: 1rem;
+            color: #c8d8c8;
+            font-style: italic;
+        }
+        
+        .digital-time {
+            font-size: 2.5rem;
+            margin: 20px 0;
+            padding: 15px 30px;
+            background: rgba(255, 255, 255, 0.06);
+            border-radius: 12px;
+            display: inline-block;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #f8f8f8;
+            letter-spacing: 2px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .clock-frame {
+            border: 3px solid #a8323e;
+            border-radius: 16px;
+            padding: 20px;
+            margin: 20px auto;
+            background: rgba(255, 255, 255, 0.03);
+            box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+        
+        .fibonacci-clock {
+            position: relative;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 12px;
+        }
+        
+        .square {
+            position: absolute;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #2d2d2d;
+            font-weight: bold;
+            font-size: 1.2em;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+        
+        /* 横屏方块尺寸 */
+        @media (orientation: landscape) {
+            .square1 { width: 100px; height: 100px; top: 0; left: 0; background: linear-gradient(135deg, #d4b56a 0%, #c4a560 100%); }
+            .square2 { width: 50px; height: 50px; top: 0; left: 100px; background: linear-gradient(135deg, #d4b56a 0%, #c4a560 100%); }
+            .square3 { width: 50px; height: 50px; top: 50px; left: 100px; background: linear-gradient(135deg, #d4b56a 0%, #c4a560 100%); }
+            .square4 { width: 150px; height: 150px; top: 100px; left: 0; background: linear-gradient(135deg, #d4b56a 0%, #c4a560 100%); }
+            .square5 { width: 250px; height: 250px; top: 0; left: 150px; background: linear-gradient(135deg, #d4b56a 0%, #c4a560 100%); }
+        }
+        
+        /* 竖屏方块尺寸 */
+        @media (orientation: portrait) {
+            .square1 { width: 80px; height: 80px; top: 0; left: 0; background: linear-gradient(135deg, #d4b56a 0%, #c4a560 100%); }
+            .square2 { width: 40px; height: 40px; top: 0; left: 80px; background: linear-gradient(135deg, #d4b56a 0%, #c4a560 100%); }
+            .square3 { width: 40px; height: 40px; top: 40px; left: 80px; background: linear-gradient(135deg, #d4b56a 0%, #c4a560 100%); }
+            .square4 { width: 120px; height: 120px; top: 80px; left: 0; background: linear-gradient(135deg, #d4b56a 0%, #c4a560 100%); }
+            .square5 { width: 200px; height: 200px; top: 0; left: 120px; background: linear-gradient(135deg, #d4b56a 0%, #c4a560 100%); }
+        }
+        
+        /* 高级圣诞配色 */
+        .hour { background: linear-gradient(135deg, #a8323e 0%, #8c2a34 100%); color: #f8f8f8; box-shadow: 0 4px 12px rgba(168, 50, 62, 0.3); }
+        .minute { background: linear-gradient(135deg, #2d6a4f 0%, #255c43 100%); color: #f8f8f8; box-shadow: 0 4px 12px rgba(45, 106, 79, 0.3); }
+        .both { background: linear-gradient(135deg, #1e3a5f 0%, #172a45 100%); color: #f8f8f8; box-shadow: 0 4px 12px rgba(30, 58, 95, 0.3); }
+        
+        .legend {
+            display: grid;
+            gap: 12px;
+            margin: 25px 0;
+        }
+        
+        @media (orientation: landscape) {
+            .legend {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+        
+        @media (orientation: portrait) {
+            .legend {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.06);
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(5px);
+        }
+        
+        .color-box {
+            width: 16px;
+            height: 16px;
+            margin-right: 8px;
+            border-radius: 3px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .info-panel {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 25px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(10px);
+        }
+        
+        .math-info {
+            font-family: 'Monaco', 'Consolas', monospace;
+            background: rgba(255, 255, 255, 0.06);
+            padding: 12px;
+            border-radius: 8px;
+            margin: 15px 0;
+            font-size: 0.9rem;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            color: #e8f5e8;
+        }
+        
+        .test-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+        
+        .test-button {
+            padding: 8px 12px;
+            background: linear-gradient(135deg, #2d5a2d 0%, #244a24 100%);
+            color: #f0f7f0;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            font-weight: 500;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .test-button:hover {
+            background: linear-gradient(135deg, #3a6b3a 0%, #2d5a2d 100%);
+            transform: translateY(-1px);
+        }
+        
+        .test-button.active {
+            background: linear-gradient(135deg, #a8323e 0%, #8c2a34 100%);
+            color: #f8f8f8;
+            box-shadow: 0 4px 8px rgba(168, 50, 62, 0.3);
+        }
+        
+        .explanation {
+            margin-top: 20px;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 15px;
+            border-radius: 10px;
+            color: #e8f5e8;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        
+        .status-indicator {
+            margin-top: 10px;
+            font-size: 0.9rem;
+            padding: 8px 12px;
+            border-radius: 10px;
+            display: inline-block;
+            font-weight: 500;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(5px);
+        }
+        
+        .real-time {
+            background: linear-gradient(135deg, rgba(45, 106, 79, 0.3) 0%, rgba(37, 92, 67, 0.3) 100%);
+            color: #a3d9b1;
+        }
+        
+        .test-mode {
+            background: linear-gradient(135deg, rgba(168, 50, 62, 0.3) 0%, rgba(140, 42, 52, 0.3) 100%);
+            color: #f0b6c1;
+        }
+        
+        .pattern-info, .pattern-counter, .minute-approximation {
+            margin-top: 8px;
+            font-size: 0.8rem;
+            color: #c8d8c8;
+        }
+        
+        .minute-approximation {
+            color: #e6b17e;
+            font-style: italic;
+        }
+
+        /* 文字颜色调整 */
+        .explanation strong {
+            color: #f8f8f8;
+        }
+        
+        .explanation span[style*="color: #ff6b6b"] {
+            color: #e67e8c !important;
+        }
+        
+        .explanation span[style*="color: #90ee90"] {
+            color: #8fcf9f !important;
+        }
+        
+        .explanation span[style*="color: #87ceeb"] {
+            color: #7baedb !important;
+        }
+        
+        .explanation span[style*="color: #d4af37"] {
+            color: #d4b56a !important;
+        }
+    </style>
+</head>
+<body>
+    <!-- 圣诞装饰元素 - 恢复原来的美观位置 -->
+    <div class="snowflake" style="top: 10%; left: 5%;">❄</div>
+    <div class="snowflake" style="top: 15%; left: 90%;">❄</div>
+    <div class="snowflake" style="top: 80%; left: 8%;">❄</div>
+    <div class="snowflake" style="top: 85%; left: 92%;">❄</div>
+    <div class="snowflake" style="top: 40%; left: 3%;">❄</div>
+    <div class="snowflake" style="top: 60%; left: 96%;">❄</div>
+    
+    <div class="ornament red" style="top: 12%; left: 15%;"></div>
+    <div class="ornament green" style="top: 20%; left: 85%;"></div>
+    <div class="ornament gold" style="top: 75%; left: 12%;"></div>
+    <div class="ornament red" style="top: 82%; left: 88%;"></div>
+    
+    <div class="christmas-tree" style="top: 5%; left: 10%;"></div>
+    <div class="christmas-tree" style="top: 70%; left: 85%; transform: scale(0.8);"></div>
+
+    <div class="container">
+        <!-- Left Panel: Clock Display -->
+        <div class="left-panel">
+            <div class="clock-container">
+                <div class="title-section">
+                    <h1>🎄 Fibonacci Christmas Clock</h1>
+                    <div class="author">by Eamonn (3E)</div>
+                </div>
+                
+                <div class="digital-time" id="digitalTime">00:00:00</div>
+                <div class="status-indicator real-time" id="statusIndicator">Real Time Mode</div>
+                
+                <div class="clock-frame">
+                    <div class="fibonacci-clock">
+                        <div class="square square1" id="square1">2</div>
+                        <div class="square square2" id="square2">1</div>
+                        <div class="square square3" id="square3">1</div>
+                        <div class="square square4" id="square4">3</div>
+                        <div class="square square5" id="square5">5</div>
+                    </div>
+                </div>
+                
+                <div class="legend">
+                    <div class="legend-item">
+                        <div class="color-box" style="background: linear-gradient(135deg, #a8323e 0%, #8c2a34 100%);"></div>
+                        Hour (Red)
+                    </div>
+                    <div class="legend-item">
+                        <div class="color-box" style="background: linear-gradient(135deg, #2d6a4f 0%, #255c43 100%);"></div>
+                        Minute (Green)
+                    </div>
+                    <div class="legend-item">
+                        <div class="color-box" style="background: linear-gradient(135deg, #1e3a5f 0%, #172a45 100%);"></div>
+                        Both (Blue)
+                    </div>
+                    <div class="legend-item">
+                        <div class="color-box" style="background: linear-gradient(135deg, #d4b56a 0%, #c4a560 100%);"></div>
+                        Neutral (Gold)
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Right Panel: Info and Controls -->
+        <div class="right-panel">
+            <div class="info-panel">
+                <div style="font-weight: 600; color: #f8f8f8;">Math Magic Behind the Clock:</div>
+                <div class="math-info" id="mathInfo">Calculating time...</div>
+                <div class="pattern-info" id="patternInfo"></div>
+                <div class="pattern-counter" id="patternCounter"></div>
+                <div class="minute-approximation" id="minuteApproximation"></div>
+                
+                <div class="test-buttons">
+                    <button class="test-button" id="test3" onclick="testTime(3, 0)">Test 3:00</button>
+                    <button class="test-button" id="test6" onclick="testTime(6, 25)">Test 6:25</button>
+                    <button class="test-button" id="test9" onclick="testTime(9, 15)">Test 9:15</button>
+                    <button class="test-button" id="test12" onclick="testTime(12, 0)">Test 12:00</button>
+                    <button class="test-button" id="realTimeBtn" onclick="useRealTime()">Real Time</button>
+                </div>
+                
+                <div class="explanation">
+                    <strong style="color: #f8f8f8;">How it works:</strong> The Fibonacci clock uses 5 squares with Fibonacci sizes (1,1,2,3,5) to represent time. 
+                    <span style="color: #e67e8c">Red squares</span> represent hours, 
+                    <span style="color: #8fcf9f">Green squares</span> represent minutes (multiplied by 5), 
+                    <span style="color: #7baedb">Blue squares</span> represent both, and 
+                    <span style="color: #d4b56a">Gold squares</span> are neutral and don't represent any time component.
+                    <strong>Minutes are rounded to the nearest 5-minute interval.</strong>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Fibonacci clock core JavaScript code
+        const fibValues = [2, 1, 1, 3, 5];
+        let isTestMode = false;
+        let testHours = 0;
+        let testMinutes = 0;
+        
+        // 修复后的有效组合配置 - 3:00现在能正确显示
+        const validCombinations = {
+            "3:00": {
+                hours: [[0, 1], [0, 2], [3]], // 2+1, 2+1, 3 - 这些组合都等于3
+                minutes: [[]] // 0分钟块
+            },
+            "6:25": {
+                hours: [[4,1], [4,2], [0,3,1], [0,3,2]], // 5+1, 5+1, 2+3+1, 2+3+1
+                minutes: [[4], [0,3], [1,2,3]] // 5, 2+3, 1+1+3
+            },
+            "9:15": {
+                hours: [[4,3], [4,0,1], [4,0,2], [0,3,1,2]], // 5+3, 5+2+1, 5+2+1, 2+3+1+1
+                minutes: [[3], [0,1], [0,2], [1,2]] // 3, 2+1, 2+1, 1+1
+            },
+            "12:00": {
+                hours: [[4,3,0,1,2]], // 5+3+2+1+1
+                minutes: [[]] // 0分钟块
+            }
+        };
+        
+        // Track current pattern indices
+        const patternIndices = {
+            "3:00": { hour: 0, minute: 0 },
+            "6:25": { hour: 0, minute: 0 },
+            "9:15": { hour: 0, minute: 0 },
+            "12:00": { hour: 0, minute: 0 }
+        };
+        
+        function updateClock() {
+            if (isTestMode) {
+                updateFibonacciClock(testHours, testMinutes);
+                const timeString = `${testHours.toString().padStart(2, '0')}:${testMinutes.toString().padStart(2, '0')}:00`;
+                document.getElementById('digitalTime').textContent = timeString;
+                return;
+            }
+            
+            const now = new Date();
+            const hours = now.getHours();
+            const minutes = now.getMinutes();
+            const seconds = now.getSeconds();
+            
+            const timeString = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            document.getElementById('digitalTime').textContent = timeString;
+            
+            updateFibonacciClock(hours, minutes);
+        }
+        
+        function updateFibonacciClock(hours, minutes) {
+            let hour12, minuteBlocks, actualDisplayMinutes;
+            
+            if (isTestMode) {
+                hour12 = testHours;
+                minuteBlocks = Math.floor(testMinutes / 5);
+                actualDisplayMinutes = testMinutes;
+            } else {
+                hour12 = hours % 12 || 12;
+                minuteBlocks = Math.round(minutes / 5);
+                actualDisplayMinutes = minuteBlocks * 5;
+            }
+            
+            resetAllSquares();
+            
+            let hourRegions, minuteRegions;
+            
+            if (isTestMode) {
+                const timeKey = `${testHours}:${testMinutes.toString().padStart(2, '0')}`;
+                
+                if (validCombinations[timeKey]) {
+                    const hourOptions = validCombinations[timeKey].hours;
+                    const minuteOptions = validCombinations[timeKey].minutes;
+                    
+                    const hourIndex = patternIndices[timeKey].hour % hourOptions.length;
+                    const minuteIndex = patternIndices[timeKey].minute % minuteOptions.length;
+                    
+                    hourRegions = hourOptions[hourIndex];
+                    minuteRegions = minuteOptions[minuteIndex];
+                    
+                    const patternCount = hourOptions.length * minuteOptions.length;
+                    const currentPattern = (hourIndex * minuteOptions.length) + minuteIndex + 1;
+                    
+                    document.getElementById('patternInfo').textContent = 
+                        `This time has ${patternCount} possible pattern combinations.`;
+                    document.getElementById('patternCounter').textContent = 
+                        `Showing pattern ${currentPattern} of ${patternCount}. Click again for next pattern.`;
+                    document.getElementById('minuteApproximation').textContent = "";
+                } else {
+                    hourRegions = findFibonacciCombinationDeterministic(hour12);
+                    minuteRegions = findFibonacciCombinationDeterministic(minuteBlocks);
+                    document.getElementById('patternInfo').textContent = "";
+                    document.getElementById('patternCounter').textContent = "";
+                    document.getElementById('minuteApproximation').textContent = "";
+                }
+            } else {
+                hourRegions = findFibonacciCombinationDeterministic(hour12);
+                minuteRegions = findFibonacciCombinationDeterministic(minuteBlocks);
+                document.getElementById('patternInfo').textContent = "";
+                document.getElementById('patternCounter').textContent = "";
+                
+                if (minutes % 5 !== 0) {
+                    document.getElementById('minuteApproximation').textContent = 
+                        `Actual minutes: ${minutes} → Rounded to: ${actualDisplayMinutes}`;
+                } else {
+                    document.getElementById('minuteApproximation').textContent = "";
+                }
+            }
+            
+            const hourSum = hourRegions.reduce((sum, region) => sum + fibValues[region], 0);
+            const minuteSum = minuteRegions.reduce((sum, region) => sum + fibValues[region], 0);
+            const displayMinutes = minuteSum * 5;
+            
+            const displayTime = isTestMode ? 
+                `${testHours}:${testMinutes.toString().padStart(2, '0')}` : 
+                `${hour12}:${minutes.toString().padStart(2, '0')}`;
+                
+            document.getElementById('mathInfo').textContent = 
+                `Time: ${displayTime} | ` +
+                `Hour: ${hourRegions.map(r => fibValues[r]).join('+')}=${hourSum} | ` +
+                `Minute: ${minuteRegions.map(r => fibValues[r]).join('+')}=${minuteSum}×5=${displayMinutes.toString().padStart(2, '0')}min`;
+            
+            applyColors(hourRegions, minuteRegions);
+        }
+        
+        function findFibonacciCombinationDeterministic(target) {
+            if (target === 0) return [];
+            
+            let remaining = target;
+            const result = [];
+            const indicesBySize = [4, 3, 0, 1, 2]; // 5, 3, 2, 1, 1
+            
+            for (const index of indicesBySize) {
+                if (fibValues[index] <= remaining) {
+                    result.push(index);
+                    remaining -= fibValues[index];
+                    if (remaining === 0) break;
+                }
+            }
+            
+            return result;
+        }
+        
+        function resetAllSquares() {
+            for (let i = 1; i <= 5; i++) {
+                const square = document.querySelector(`.square${i}`);
+                square.className = `square square${i}`;
+            }
+        }
+        
+        function applyColors(hourRegions, minuteRegions) {
+            hourRegions.forEach(region => {
+                const square = document.querySelector(`.square${region + 1}`);
+                square.classList.add('hour');
+            });
+            
+            minuteRegions.forEach(region => {
+                const square = document.querySelector(`.square${region + 1}`);
+                if (square.classList.contains('hour')) {
+                    square.classList.remove('hour');
+                    square.classList.add('both');
+                } else {
+                    square.classList.add('minute');
+                }
+            });
+        }
+        
+        function testTime(hours, minutes) {
+            isTestMode = true;
+            testHours = hours;
+            testMinutes = minutes;
+            
+            const timeKey = `${hours}:${minutes.toString().padStart(2, '0')}`;
+            
+            if (validCombinations[timeKey]) {
+                const hourOptions = validCombinations[timeKey].hours;
+                const minuteOptions = validCombinations[timeKey].minutes;
+                
+                patternIndices[timeKey].minute++;
+                if (patternIndices[timeKey].minute >= minuteOptions.length) {
+                    patternIndices[timeKey].minute = 0;
+                    patternIndices[timeKey].hour++;
+                    if (patternIndices[timeKey].hour >= hourOptions.length) {
+                        patternIndices[timeKey].hour = 0;
+                    }
+                }
+            }
+            
+            updateClock();
+            
+            document.querySelectorAll('.test-button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.getElementById(`test${hours}`).classList.add('active');
+            
+            document.getElementById('statusIndicator').textContent = "Test Mode - Click for Next Pattern";
+            document.getElementById('statusIndicator').className = "status-indicator test-mode";
+        }
+        
+        function useRealTime() {
+            isTestMode = false;
+            
+            document.querySelectorAll('.test-button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.getElementById('realTimeBtn').classList.add('active');
+            
+            updateClock();
+            document.getElementById('statusIndicator').textContent = "Real Time Mode";
+            document.getElementById('statusIndicator').className = "status-indicator real-time";
+            document.getElementById('patternInfo').textContent = "";
+            document.getElementById('patternCounter').textContent = "";
+            document.getElementById('minuteApproximation').textContent = "";
+        }
+        
+        // Initialize clock
+        setInterval(updateClock, 1000);
+        updateClock();
+        document.getElementById('realTimeBtn').classList.add('active');
+    </script>
+</body>
+</html>
