@@ -569,6 +569,7 @@
         let isDigitalTimeVisible = true;
         let currentTestTimeKey = '';
         
+        // 修正9:15的组合 - 小时应该是9，分钟应该是3（3×5=15分钟）
         const validCombinations = {
             "3:00": {
                 hours: [[0, 1], [0, 2], [3]],
@@ -619,16 +620,14 @@
         }
         
         function updateFibonacciClock(hours, minutes) {
-            let hour12, minuteBlocks, actualDisplayMinutes;
+            let hour12, minuteBlocks;
             
             if (isTestMode) {
                 hour12 = testHours;
-                minuteBlocks = Math.floor(testMinutes / 5);
-                actualDisplayMinutes = testMinutes;
+                minuteBlocks = Math.round(testMinutes / 5); // 使用round而不是floor
             } else {
                 hour12 = hours % 12 || 12;
                 minuteBlocks = Math.round(minutes / 5);
-                actualDisplayMinutes = minuteBlocks * 5;
             }
             
             resetAllSquares();
@@ -672,6 +671,20 @@
             const minuteSum = minuteRegions.reduce((sum, region) => sum + fibValues[region], 0);
             const displayMinutes = minuteSum * 5;
             
+            // 验证9:15的计算
+            if (isTestMode && testHours === 9 && testMinutes === 15) {
+                console.log(`9:15 Debug - hourRegions: ${hourRegions}, hourSum: ${hourSum}`);
+                console.log(`9:15 Debug - minuteRegions: ${minuteRegions}, minuteSum: ${minuteSum}, displayMinutes: ${displayMinutes}`);
+                
+                // 确保小时总和为9，分钟总和为3
+                if (hourSum !== 9) {
+                    console.warn(`Hour sum should be 9 but is ${hourSum}`);
+                }
+                if (minuteSum !== 3) {
+                    console.warn(`Minute sum should be 3 but is ${minuteSum}`);
+                }
+            }
+            
             const displayTime = isTestMode ? 
                 `${testHours}:${testMinutes.toString().padStart(2, '0')}` : 
                 `${hour12}:${minutes.toString().padStart(2, '0')}`;
@@ -710,11 +723,13 @@
         }
         
         function applyColors(hourRegions, minuteRegions) {
+            // 先应用小时颜色
             hourRegions.forEach(region => {
                 const square = document.querySelector(`.square${region + 1}`);
                 square.classList.add('hour');
             });
             
+            // 再应用分钟颜色，处理重叠
             minuteRegions.forEach(region => {
                 const square = document.querySelector(`.square${region + 1}`);
                 if (square.classList.contains('hour')) {
@@ -737,18 +752,9 @@
             // 显示"下一个图案"按钮
             document.getElementById('nextPatternBtn').style.display = 'inline-block';
             
-            if (validCombinations[timeKey]) {
-                const hourOptions = validCombinations[timeKey].hours;
-                const minuteOptions = validCombinations[timeKey].minutes;
-                
-                patternIndices[timeKey].minute++;
-                if (patternIndices[timeKey].minute >= minuteOptions.length) {
-                    patternIndices[timeKey].minute = 0;
-                    patternIndices[timeKey].hour++;
-                    if (patternIndices[timeKey].hour >= hourOptions.length) {
-                        patternIndices[timeKey].hour = 0;
-                    }
-                }
+            // 如果这个时间有预定义组合，初始化索引
+            if (validCombinations[timeKey] && !patternIndices[timeKey]) {
+                patternIndices[timeKey] = { hour: 0, minute: 0 };
             }
             
             updateClock();
@@ -768,10 +774,19 @@
                 const hourOptions = validCombinations[currentTestTimeKey].hours;
                 const minuteOptions = validCombinations[currentTestTimeKey].minutes;
                 
+                if (!patternIndices[currentTestTimeKey]) {
+                    patternIndices[currentTestTimeKey] = { hour: 0, minute: 0 };
+                }
+                
+                // 递增分钟索引
                 patternIndices[currentTestTimeKey].minute++;
+                
+                // 如果分钟索引超出范围，重置并递增小时索引
                 if (patternIndices[currentTestTimeKey].minute >= minuteOptions.length) {
                     patternIndices[currentTestTimeKey].minute = 0;
                     patternIndices[currentTestTimeKey].hour++;
+                    
+                    // 如果小时索引超出范围，重置
                     if (patternIndices[currentTestTimeKey].hour >= hourOptions.length) {
                         patternIndices[currentTestTimeKey].hour = 0;
                     }
@@ -817,10 +832,30 @@
             }
         }
         
+        // 测试9:15的验证函数
+        function validate915() {
+            console.log("Validating 9:15 combinations...");
+            const hourOptions = validCombinations["9:15"].hours;
+            const minuteOptions = validCombinations["9:15"].minutes;
+            
+            hourOptions.forEach((hourRegions, hourIndex) => {
+                const hourSum = hourRegions.reduce((sum, region) => sum + fibValues[region], 0);
+                console.log(`Hour option ${hourIndex + 1}: ${hourRegions.map(r => fibValues[r]).join('+')} = ${hourSum}`);
+            });
+            
+            minuteOptions.forEach((minuteRegions, minuteIndex) => {
+                const minuteSum = minuteRegions.reduce((sum, region) => sum + fibValues[region], 0);
+                console.log(`Minute option ${minuteIndex + 1}: ${minuteRegions.map(r => fibValues[r]).join('+')} = ${minuteSum} (${minuteSum * 5} minutes)`);
+            });
+        }
+        
         // Initialize clock
         setInterval(updateClock, 1000);
         updateClock();
         document.getElementById('realTimeBtn').classList.add('active');
+        
+        // 验证9:15
+        validate915();
     </script>
 </body>
 </html>
