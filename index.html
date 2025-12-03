@@ -12,12 +12,16 @@
         }
         
         body {
-            background: linear-gradient(135deg, #0d2412 0%, #152f15 100%);
+            background: #0d2412;
             color: #f0f7f0;
             font-family: 'Arial', sans-serif;
             min-height: 100vh;
             overflow-x: hidden;
             position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
         }
         
         /* 圣诞装饰元素 */
@@ -29,174 +33,53 @@
             z-index: 1;
         }
         
-        .ornament {
-            position: absolute;
-            width: 24px;
-            height: 24px;
-            border-radius: 50%;
-            z-index: 1;
-        }
-        
-        .ornament.red { background: radial-gradient(circle at 30% 30%, #ff6b6b, #a8323e); }
-        .ornament.green { background: radial-gradient(circle at 30% 30%, #8fcf9f, #2d6a4f); }
-        .ornament.gold { background: radial-gradient(circle at 30% 30%, #ffd700, #d4b56a); }
-        
-        .christmas-tree {
-            position: absolute;
-            width: 0;
-            height: 0;
-            border-left: 25px solid transparent;
-            border-right: 25px solid transparent;
-            border-bottom: 40px solid #2d6a4f;
-            z-index: 1;
-        }
-        
-        .christmas-tree::before {
-            content: '';
-            position: absolute;
-            top: 10px;
-            left: -20px;
-            width: 0;
-            height: 0;
-            border-left: 20px solid transparent;
-            border-right: 20px solid transparent;
-            border-bottom: 30px solid #3a7a5a;
-        }
-        
-        .christmas-tree::after {
-            content: '';
-            position: absolute;
-            top: 25px;
-            left: -15px;
-            width: 0;
-            height: 0;
-            border-left: 15px solid transparent;
-            border-right: 15px solid transparent;
-            border-bottom: 20px solid #4a8a6a;
-        }
-        
+        /* 主容器 - ALWAYS 横版布局 */
         .container {
             display: flex;
-            width: 95vw;
-            min-height: 90vh;
-            background: rgba(255, 255, 255, 0.05);
+            width: 95%;
+            max-width: 1200px;
+            min-height: 600px;
+            background: rgba(20, 40, 20, 0.9);
             border-radius: 20px;
             padding: 30px;
             border: 2px solid #a8323e;
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-            margin: 20px auto;
             position: relative;
             z-index: 2;
-            backdrop-filter: blur(10px);
+            flex-direction: row;
         }
         
-        /* 横屏布局 */
-        @media (orientation: landscape) {
-            .container {
-                flex-direction: row;
-            }
-            
-            .left-panel {
-                flex: 1;
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                justify-content: center;
-                padding-right: 30px;
-                border-right: 1px solid rgba(255, 255, 255, 0.08);
-            }
-            
-            .right-panel {
-                flex: 1;
-                display: flex;
-                flex-direction: column;
-                justify-content: center;
-                padding-left: 30px;
-            }
-            
-            .fibonacci-clock {
-                width: 400px;
-                height: 250px;
-            }
+        /* 左侧面板：时钟显示 */
+        .left-panel {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding-right: 30px;
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
+            min-height: 500px;
         }
         
-        /* 竖屏布局 */
-        @media (orientation: portrait) {
-            .container {
-                flex-direction: column;
-                min-height: auto;
-            }
-            
-            .left-panel, .right-panel {
-                padding: 20px;
-                border: none;
-            }
-            
-            .left-panel {
-                border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-            }
-            
-            .fibonacci-clock {
-                width: 320px;
-                height: 200px;
-            }
-            
-            .legend {
-                grid-template-columns: 1fr 1fr;
-            }
+        /* 右侧面板：信息和控制 */
+        .right-panel {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding-left: 30px;
+            min-height: 500px;
         }
         
-        .clock-container {
-            text-align: center;
-            width: 100%;
-        }
-        
-        .title-section {
-            margin-bottom: 20px;
-        }
-        
-        h1 {
-            font-size: 2.2rem;
-            margin-bottom: 5px;
-            color: #f8f8f8;
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-        }
-        
-        .author {
-            font-size: 1rem;
-            color: #c8d8c8;
-            font-style: italic;
-        }
-        
-        .digital-time {
-            font-size: 2.5rem;
-            margin: 20px 0;
-            padding: 15px 30px;
-            background: rgba(255, 255, 255, 0.06);
-            border-radius: 12px;
-            display: inline-block;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            color: #f8f8f8;
-            letter-spacing: 2px;
-            backdrop-filter: blur(10px);
-        }
-        
-        .clock-frame {
-            border: 3px solid #a8323e;
-            border-radius: 16px;
-            padding: 20px;
-            margin: 20px auto;
-            background: rgba(255, 255, 255, 0.03);
-            box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.2);
-        }
-        
+        /* 斐波那契时钟容器 */
         .fibonacci-clock {
+            width: 400px;
+            height: 250px;
             position: relative;
-            margin: 0 auto;
-            background: rgba(255, 255, 255, 0.02);
-            border-radius: 12px;
+            margin: 20px auto;
         }
         
+        /* 方块样式 */
         .square {
             position: absolute;
             display: flex;
@@ -205,133 +88,44 @@
             color: #2d2d2d;
             font-weight: bold;
             font-size: 1.2em;
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            border-radius: 8px;
-            transition: all 0.3s ease;
-        }
-        
-        /* 横屏方块尺寸 */
-        @media (orientation: landscape) {
-            .square1 { width: 100px; height: 100px; top: 0; left: 0; background: linear-gradient(135deg, #d4b56a 0%, #c4a560 100%); }
-            .square2 { width: 50px; height: 50px; top: 0; left: 100px; background: linear-gradient(135deg, #d4b56a 0%, #c4a560 100%); }
-            .square3 { width: 50px; height: 50px; top: 50px; left: 100px; background: linear-gradient(135deg, #d4b56a 0%, #c4a560 100%); }
-            .square4 { width: 150px; height: 150px; top: 100px; left: 0; background: linear-gradient(135deg, #d4b56a 0%, #c4a560 100%); }
-            .square5 { width: 250px; height: 250px; top: 0; left: 150px; background: linear-gradient(135deg, #d4b56a 0%, #c4a560 100%); }
-        }
-        
-        /* 竖屏方块尺寸 */
-        @media (orientation: portrait) {
-            .square1 { width: 80px; height: 80px; top: 0; left: 0; background: linear-gradient(135deg, #d4b56a 0%, #c4a560 100%); }
-            .square2 { width: 40px; height: 40px; top: 0; left: 80px; background: linear-gradient(135deg, #d4b56a 0%, #c4a560 100%); }
-            .square3 { width: 40px; height: 40px; top: 40px; left: 80px; background: linear-gradient(135deg, #d4b56a 0%, #c4a560 100%); }
-            .square4 { width: 120px; height: 120px; top: 80px; left: 0; background: linear-gradient(135deg, #d4b56a 0%, #c4a560 100%); }
-            .square5 { width: 200px; height: 200px; top: 0; left: 120px; background: linear-gradient(135deg, #d4b56a 0%, #c4a560 100%); }
-        }
-        
-        /* 高级圣诞配色 */
-        .hour { background: linear-gradient(135deg, #a8323e 0%, #8c2a34 100%); color: #f8f8f8; box-shadow: 0 4px 12px rgba(168, 50, 62, 0.3); }
-        .minute { background: linear-gradient(135deg, #2d6a4f 0%, #255c43 100%); color: #f8f8f8; box-shadow: 0 4px 12px rgba(45, 106, 79, 0.3); }
-        .both { background: linear-gradient(135deg, #1e3a5f 0%, #172a45 100%); color: #f8f8f8; box-shadow: 0 4px 12px rgba(30, 58, 95, 0.3); }
-        
-        .legend {
-            display: grid;
-            gap: 12px;
-            margin: 25px 0;
-        }
-        
-        @media (orientation: landscape) {
-            .legend {
-                grid-template-columns: 1fr 1fr;
-            }
-        }
-        
-        @media (orientation: portrait) {
-            .legend {
-                grid-template-columns: 1fr 1fr;
-            }
-        }
-        
-        .legend-item {
-            display: flex;
-            align-items: center;
-            background: rgba(255, 255, 255, 0.06);
-            padding: 8px 12px;
-            border-radius: 8px;
-            font-size: 0.9rem;
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            backdrop-filter: blur(5px);
-        }
-        
-        .color-box {
-            width: 16px;
-            height: 16px;
-            margin-right: 8px;
-            border-radius: 3px;
             border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            transition: background-color 0.3s ease;
         }
         
-        .info-panel {
-            background: rgba(255, 255, 255, 0.05);
-            padding: 25px;
+        /* 方块尺寸和位置 - 横版布局 */
+        .square1 { width: 100px; height: 100px; top: 0; left: 0; background: #d4b56a; }
+        .square2 { width: 50px; height: 50px; top: 0; left: 100px; background: #d4b56a; }
+        .square3 { width: 50px; height: 50px; top: 50px; left: 100px; background: #d4b56a; }
+        .square4 { width: 150px; height: 150px; top: 100px; left: 0; background: #d4b56a; }
+        .square5 { width: 250px; height: 250px; top: 0; left: 150px; background: #d4b56a; }
+        
+        /* 颜色类别 */
+        .hour { background: #a8323e !important; color: white !important; }
+        .minute { background: #2d6a4f !important; color: white !important; }
+        .both { background: #1e3a5f !important; color: white !important; }
+        
+        /* 数字时间显示 */
+        .digital-time {
+            font-size: 2.5rem;
+            margin: 20px 0;
+            padding: 15px 30px;
+            background: rgba(40, 60, 40, 0.8);
             border-radius: 12px;
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            backdrop-filter: blur(10px);
-        }
-        
-        .math-info {
-            font-family: 'Monaco', 'Consolas', monospace;
-            background: rgba(255, 255, 255, 0.06);
-            padding: 12px;
-            border-radius: 8px;
-            margin: 15px 0;
-            font-size: 0.9rem;
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            color: #e8f5e8;
-        }
-        
-        .test-buttons {
-            display: flex;
-            gap: 10px;
-            justify-content: center;
-            flex-wrap: wrap;
-            margin-top: 20px;
-        }
-        
-        .test-button {
-            padding: 8px 12px;
-            background: linear-gradient(135deg, #2d5a2d 0%, #244a24 100%);
-            color: #f0f7f0;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 0.8rem;
-            font-weight: 500;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            display: inline-block;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: #f8f8f8;
+            letter-spacing: 2px;
+            font-family: 'Courier New', monospace;
             transition: all 0.3s ease;
         }
         
-        .test-button:hover {
-            background: linear-gradient(135deg, #3a6b3a 0%, #2d5a2d 100%);
-            transform: translateY(-1px);
+        .digital-time.hidden {
+            opacity: 0;
+            transform: scale(0.9);
         }
         
-        .test-button.active {
-            background: linear-gradient(135deg, #a8323e 0%, #8c2a34 100%);
-            color: #f8f8f8;
-            box-shadow: 0 4px 8px rgba(168, 50, 62, 0.3);
-        }
-        
-        .explanation {
-            margin-top: 20px;
-            font-size: 0.9rem;
-            line-height: 1.5;
-            background: rgba(255, 255, 255, 0.05);
-            padding: 15px;
-            border-radius: 10px;
-            color: #e8f5e8;
-            border: 1px solid rgba(255, 255, 255, 0.08);
-        }
-        
+        /* 状态指示器 */
         .status-indicator {
             margin-top: 10px;
             font-size: 0.9rem;
@@ -339,50 +133,340 @@
             border-radius: 10px;
             display: inline-block;
             font-weight: 500;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(5px);
-        }
-        
-        .real-time {
-            background: linear-gradient(135deg, rgba(45, 106, 79, 0.3) 0%, rgba(37, 92, 67, 0.3) 100%);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            background: rgba(45, 106, 79, 0.4);
             color: #a3d9b1;
         }
         
-        .test-mode {
-            background: linear-gradient(135deg, rgba(168, 50, 62, 0.3) 0%, rgba(140, 42, 52, 0.3) 100%);
-            color: #f0b6c1;
+        /* 按钮样式 */
+        .test-button {
+            padding: 10px 16px;
+            background: #2d5a2d;
+            color: #f0f7f0;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 500;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+            margin: 5px;
         }
         
-        .pattern-info, .pattern-counter, .minute-approximation {
-            margin-top: 8px;
+        .test-button:hover {
+            background: #3d6a3d;
+            transform: translateY(-2px);
+        }
+        
+        .test-button.active {
+            background: #a8323e;
+            color: white;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+        
+        /* 新按钮样式 - 隐藏时间按钮 */
+        .toggle-time-button {
+            padding: 8px 16px;
+            background: #2d5a2d;
+            color: #f0f7f0;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
             font-size: 0.8rem;
-            color: #c8d8c8;
+            font-weight: 500;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+            margin-top: 10px;
         }
         
-        .minute-approximation {
-            color: #e6b17e;
-            font-style: italic;
+        .toggle-time-button:hover {
+            background: #3d6a3d;
+            transform: translateY(-2px);
         }
-
-        /* 文字颜色调整 */
-        .explanation strong {
+        
+        /* 下一个图案按钮 */
+        .next-pattern-button {
+            padding: 8px 16px;
+            background: #1e3a5f;
+            color: #f0f7f0;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            font-weight: 500;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+            margin-left: 10px;
+        }
+        
+        .next-pattern-button:hover {
+            background: #2a4a7f;
+            transform: translateY(-2px);
+        }
+        
+        /* 按钮行容器 */
+        .button-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 10px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        /* 信息面板 */
+        .info-panel {
+            background: rgba(30, 50, 30, 0.9);
+            padding: 25px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            height: 100%;
+            min-height: 400px;
+        }
+        
+        /* 颜色图例 */
+        .color-legend {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin: 25px 0;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            background: rgba(50, 70, 50, 0.8);
+            padding: 8px 12px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 0.9rem;
+        }
+        
+        .color-box {
+            width: 16px;
+            height: 16px;
+            margin-right: 8px;
+            border-radius: 3px;
+            border: 1px solid rgba(255,255,255,0.3);
+        }
+        
+        /* 标题样式 */
+        .title-container {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .main-title {
+            font-size: 2.2rem;
+            margin-bottom: 5px;
             color: #f8f8f8;
         }
         
-        .explanation span[style*="color: #ff6b6b"] {
-            color: #e67e8c !important;
+        .subtitle {
+            font-size: 1rem;
+            color: #c8d8c8;
+            font-style: italic;
         }
         
-        .explanation span[style*="color: #90ee90"] {
-            color: #8fcf9f !important;
+        /* 时钟框架 */
+        .clock-frame {
+            border: 3px solid #a8323e;
+            border-radius: 16px;
+            padding: 20px;
+            margin: 20px auto;
+            background: rgba(30, 50, 30, 0.5);
+            max-width: 440px;
         }
         
-        .explanation span[style*="color: #87ceeb"] {
-            color: #7baedb !important;
+        /* 按钮容器 */
+        .button-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 20px;
         }
         
-        .explanation span[style*="color: #d4af37"] {
-            color: #d4b56a !important;
+        /* 数学信息显示 */
+        .math-info {
+            font-family: 'Courier New', monospace;
+            background: rgba(50, 70, 50, 0.8);
+            padding: 12px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border: 1px solid rgba(255,255,255,0.1);
+            color: #e8f5e8;
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+        
+        /* 说明文本 */
+        .explanation {
+            margin-top: 20px;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            background: rgba(50, 70, 50, 0.8);
+            padding: 15px;
+            border-radius: 10px;
+            color: #e8f5e8;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .highlight-red { color: #e67e8c; }
+        .highlight-green { color: #8fcf9f; }
+        .highlight-blue { color: #7baedb; }
+        .highlight-gold { color: #d4b56a; }
+        
+        /* 模式信息显示 */
+        .mode-info {
+            font-size: 0.9rem;
+            margin-top: 5px;
+            color: #c8d8c8;
+            text-align: center;
+        }
+        
+        /* 只在小手机上显示竖版 */
+        @media (max-width: 767px) {
+            body {
+                padding: 10px;
+            }
+            
+            .container {
+                flex-direction: column;
+                width: 100%;
+                max-width: 100%;
+                padding: 15px;
+                min-height: auto;
+            }
+            
+            .left-panel, .right-panel {
+                padding: 15px;
+                border: none;
+                width: 100%;
+                min-height: auto;
+            }
+            
+            .left-panel {
+                border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+                padding-bottom: 25px;
+            }
+            
+            .right-panel {
+                padding-top: 25px;
+            }
+            
+            .fibonacci-clock {
+                width: 320px;
+                height: 200px;
+            }
+            
+            .digital-time {
+                font-size: 2rem;
+                padding: 12px 24px;
+            }
+            
+            /* 调整方块大小以适应竖屏 */
+            .square1 { width: 80px; height: 80px; }
+            .square2 { width: 40px; height: 40px; left: 80px; }
+            .square3 { width: 40px; height: 40px; top: 40px; left: 80px; }
+            .square4 { width: 120px; height: 120px; top: 80px; }
+            .square5 { width: 200px; height: 200px; left: 120px; }
+            
+            .main-title {
+                font-size: 1.8rem;
+            }
+            
+            .info-panel {
+                min-height: auto;
+            }
+            
+            .button-row {
+                flex-direction: column;
+            }
+        }
+        
+        /* 非常小的手机屏幕 */
+        @media (max-width: 480px) {
+            .fibonacci-clock {
+                width: 280px;
+                height: 175px;
+            }
+            
+            .square1 { width: 70px; height: 70px; }
+            .square2 { width: 35px; height: 35px; left: 70px; }
+            .square3 { width: 35px; height: 35px; top: 35px; left: 70px; }
+            .square4 { width: 105px; height: 105px; top: 70px; }
+            .square5 { width: 175px; height: 175px; left: 105px; }
+            
+            .digital-time {
+                font-size: 1.5rem;
+                padding: 10px 20px;
+            }
+            
+            .info-panel {
+                padding: 15px;
+            }
+            
+            .color-legend {
+                grid-template-columns: 1fr;
+                gap: 8px;
+            }
+        }
+        
+        /* iPad横屏优化 - 确保横版布局 */
+        @media (min-width: 768px) and (max-width: 1024px) {
+            .container {
+                flex-direction: row;
+                max-width: 95%;
+                padding: 25px;
+                min-height: 500px;
+            }
+            
+            .fibonacci-clock {
+                width: 350px;
+                height: 220px;
+            }
+            
+            .square1 { width: 87px; height: 87px; }
+            .square2 { width: 44px; height: 44px; left: 87px; }
+            .square3 { width: 44px; height: 44px; top: 44px; left: 87px; }
+            .square4 { width: 131px; height: 131px; top: 87px; }
+            .square5 { width: 218px; height: 218px; left: 131px; }
+            
+            .digital-time {
+                font-size: 2.2rem;
+                padding: 12px 24px;
+            }
+            
+            .left-panel, .right-panel {
+                min-height: 450px;
+            }
+        }
+        
+        /* 电脑屏幕优化 */
+        @media (min-width: 1025px) {
+            .container {
+                max-width: 1200px;
+                padding: 30px;
+                min-height: 600px;
+            }
+            
+            .fibonacci-clock {
+                width: 400px;
+                height: 250px;
+            }
+            
+            .digital-time {
+                font-size: 2.5rem;
+            }
+            
+            .info-panel {
+                padding: 30px;
+            }
+            
+            .left-panel, .right-panel {
+                min-height: 500px;
+            }
         }
     </style>
 </head>
@@ -394,68 +478,66 @@
     <div class="snowflake" style="top: 85%; left: 92%;">❄</div>
     <div class="snowflake" style="top: 40%; left: 3%;">❄</div>
     <div class="snowflake" style="top: 60%; left: 96%;">❄</div>
-    
-    <div class="ornament red" style="top: 12%; left: 15%;"></div>
-    <div class="ornament green" style="top: 20%; left: 85%;"></div>
-    <div class="ornament gold" style="top: 75%; left: 12%;"></div>
-    <div class="ornament red" style="top: 82%; left: 88%;"></div>
-    
-    <div class="christmas-tree" style="top: 5%; left: 10%;"></div>
-    <div class="christmas-tree" style="top: 70%; left: 85%; transform: scale(0.8);"></div>
 
     <div class="container">
-        <!-- Left Panel: Clock Display -->
+        <!-- 左侧面板：时钟显示 -->
         <div class="left-panel">
-            <div class="clock-container">
-                <div class="title-section">
-                    <h1>🎄 Fibonacci Christmas Clock</h1>
-                    <div class="author">by Eamonn (3E)</div>
+            <div class="title-container">
+                <h1 class="main-title">🎄 Fibonacci Christmas Clock</h1>
+                <div class="subtitle">by Eamonn (3E)</div>
+            </div>
+            
+            <div class="digital-time" id="digitalTime">00:00:00</div>
+            
+            <div class="button-row">
+                <div class="status-indicator" id="statusIndicator">Real Time</div>
+                <button class="next-pattern-button" id="nextPatternBtn" onclick="nextPattern()" style="display: none;">Next Pattern</button>
+            </div>
+            
+            <button class="toggle-time-button" id="toggleTimeBtn" onclick="toggleDigitalTime()">
+                Hide Digital Time
+            </button>
+            
+            <div class="clock-frame">
+                <div class="fibonacci-clock">
+                    <div class="square square1" id="square1">2</div>
+                    <div class="square square2" id="square2">1</div>
+                    <div class="square square3" id="square3">1</div>
+                    <div class="square square4" id="square4">3</div>
+                    <div class="square square5" id="square5">5</div>
                 </div>
-                
-                <div class="digital-time" id="digitalTime">00:00:00</div>
-                <div class="status-indicator real-time" id="statusIndicator">Real Time Mode</div>
-                
-                <div class="clock-frame">
-                    <div class="fibonacci-clock">
-                        <div class="square square1" id="square1">2</div>
-                        <div class="square square2" id="square2">1</div>
-                        <div class="square square3" id="square3">1</div>
-                        <div class="square square4" id="square4">3</div>
-                        <div class="square square5" id="square5">5</div>
-                    </div>
+            </div>
+            
+            <div class="color-legend">
+                <div class="legend-item">
+                    <div class="color-box" style="background: #a8323e;"></div>
+                    Hour (Red)
                 </div>
-                
-                <div class="legend">
-                    <div class="legend-item">
-                        <div class="color-box" style="background: linear-gradient(135deg, #a8323e 0%, #8c2a34 100%);"></div>
-                        Hour (Red)
-                    </div>
-                    <div class="legend-item">
-                        <div class="color-box" style="background: linear-gradient(135deg, #2d6a4f 0%, #255c43 100%);"></div>
-                        Minute (Green)
-                    </div>
-                    <div class="legend-item">
-                        <div class="color-box" style="background: linear-gradient(135deg, #1e3a5f 0%, #172a45 100%);"></div>
-                        Both (Blue)
-                    </div>
-                    <div class="legend-item">
-                        <div class="color-box" style="background: linear-gradient(135deg, #d4b56a 0%, #c4a560 100%);"></div>
-                        Neutral (Gold)
-                    </div>
+                <div class="legend-item">
+                    <div class="color-box" style="background: #2d6a4f;"></div>
+                    Minute (Green)
+                </div>
+                <div class="legend-item">
+                    <div class="color-box" style="background: #1e3a5f;"></div>
+                    Both (Blue)
+                </div>
+                <div class="legend-item">
+                    <div class="color-box" style="background: #d4b56a;"></div>
+                    Neutral (Gold)
                 </div>
             </div>
         </div>
         
-        <!-- Right Panel: Info and Controls -->
+        <!-- 右侧面板：信息和控制 -->
         <div class="right-panel">
             <div class="info-panel">
-                <div style="font-weight: 600; color: #f8f8f8;">Math Magic Behind the Clock:</div>
-                <div class="math-info" id="mathInfo">Calculating time...</div>
-                <div class="pattern-info" id="patternInfo"></div>
-                <div class="pattern-counter" id="patternCounter"></div>
-                <div class="minute-approximation" id="minuteApproximation"></div>
+                <div style="font-weight: 600; color: #f8f8f8; margin-bottom: 10px; font-size: 1.1rem;">
+                    Math Magic Behind the Clock:
+                </div>
                 
-                <div class="test-buttons">
+                <div class="math-info" id="mathInfo">Calculating time...</div>
+                
+                <div class="button-container">
                     <button class="test-button" id="test3" onclick="testTime(3, 0)">Test 3:00</button>
                     <button class="test-button" id="test6" onclick="testTime(6, 25)">Test 6:25</button>
                     <button class="test-button" id="test9" onclick="testTime(9, 15)">Test 9:15</button>
@@ -463,12 +545,15 @@
                     <button class="test-button" id="realTimeBtn" onclick="useRealTime()">Real Time</button>
                 </div>
                 
+                <div class="mode-info" id="modeInfo"></div>
+                
                 <div class="explanation">
-                    <strong style="color: #f8f8f8;">How it works:</strong> The Fibonacci clock uses 5 squares with Fibonacci sizes (1,1,2,3,5) to represent time. 
-                    <span style="color: #e67e8c">Red squares</span> represent hours, 
-                    <span style="color: #8fcf9f">Green squares</span> represent minutes (multiplied by 5), 
-                    <span style="color: #7baedb">Blue squares</span> represent both, and 
-                    <span style="color: #d4b56a">Gold squares</span> are neutral and don't represent any time component.
+                    <strong style="color: #f8f8f8;">How it works:</strong> 
+                    The Fibonacci clock uses 5 squares with Fibonacci sizes (1,1,2,3,5) to represent time. 
+                    <span class="highlight-red">Red squares</span> represent hours, 
+                    <span class="highlight-green">Green squares</span> represent minutes (multiplied by 5), 
+                    <span class="highlight-blue">Blue squares</span> represent both, and 
+                    <span class="highlight-gold">Gold squares</span> are neutral and don't represent any time component.
                     <strong>Minutes are rounded to the nearest 5-minute interval.</strong>
                 </div>
             </div>
@@ -477,32 +562,32 @@
 
     <script>
         // Fibonacci clock core JavaScript code
-        const fibValues = [2, 1, 1, 3, 5]; // 索引: 0=2, 1=1, 2=1, 3=3, 4=5
+        const fibValues = [2, 1, 1, 3, 5];
         let isTestMode = false;
         let testHours = 0;
         let testMinutes = 0;
+        let isDigitalTimeVisible = true;
+        let currentTestTimeKey = '';
         
-        // 修正后的有效组合配置 - 所有时间点都经过数学验证
         const validCombinations = {
             "3:00": {
-                hours: [[0, 1], [0, 2], [3]], // 2+1=3, 2+1=3, 3=3
-                minutes: [[]] // 0分钟块 = 0分钟
+                hours: [[0, 1], [0, 2], [3]],
+                minutes: [[]]
             },
             "6:25": {
-                hours: [[4,1], [4,2], [0,3,1], [0,3,2]], // 5+1=6, 5+1=6, 2+3+1=6, 2+3+1=6
-                minutes: [[4], [0,3], [1,2,3]] // 5=5, 2+3=5, 1+1+3=5
+                hours: [[4,1], [4,2], [0,3,1], [0,3,2]],
+                minutes: [[4], [0,3], [1,2,3]]
             },
             "9:15": {
-                hours: [[4,3,1], [4,3,2], [4,0,1,2]], // 5+3+1=9, 5+3+1=9, 5+2+1+1=9
-                minutes: [[3], [0,1], [0,2]] // 3=3, 2+1=3, 2+1=3
+                hours: [[4,3], [4,0,1], [4,0,2], [0,3,1,2]],
+                minutes: [[3], [0,1], [0,2], [1,2]]
             },
             "12:00": {
-                hours: [[4,3,0,1,2]], // 5+3+2+1+1=12
-                minutes: [[]] // 0分钟块
+                hours: [[4,3,0,1,2]],
+                minutes: [[]]
             }
         };
         
-        // Track current pattern indices
         const patternIndices = {
             "3:00": { hour: 0, minute: 0 },
             "6:25": { hour: 0, minute: 0 },
@@ -514,7 +599,9 @@
             if (isTestMode) {
                 updateFibonacciClock(testHours, testMinutes);
                 const timeString = `${testHours.toString().padStart(2, '0')}:${testMinutes.toString().padStart(2, '0')}:00`;
-                document.getElementById('digitalTime').textContent = timeString;
+                if (isDigitalTimeVisible) {
+                    document.getElementById('digitalTime').textContent = timeString;
+                }
                 return;
             }
             
@@ -524,7 +611,9 @@
             const seconds = now.getSeconds();
             
             const timeString = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-            document.getElementById('digitalTime').textContent = timeString;
+            if (isDigitalTimeVisible) {
+                document.getElementById('digitalTime').textContent = timeString;
+            }
             
             updateFibonacciClock(hours, minutes);
         }
@@ -545,9 +634,12 @@
             resetAllSquares();
             
             let hourRegions, minuteRegions;
+            let patternCount = 1;
+            let currentPattern = 1;
             
             if (isTestMode) {
                 const timeKey = `${testHours}:${testMinutes.toString().padStart(2, '0')}`;
+                currentTestTimeKey = timeKey;
                 
                 if (validCombinations[timeKey]) {
                     const hourOptions = validCombinations[timeKey].hours;
@@ -559,33 +651,21 @@
                     hourRegions = hourOptions[hourIndex];
                     minuteRegions = minuteOptions[minuteIndex];
                     
-                    const patternCount = hourOptions.length * minuteOptions.length;
-                    const currentPattern = (hourIndex * minuteOptions.length) + minuteIndex + 1;
+                    patternCount = hourOptions.length * minuteOptions.length;
+                    currentPattern = (hourIndex * minuteOptions.length) + minuteIndex + 1;
                     
-                    document.getElementById('patternInfo').textContent = 
-                        `This time has ${patternCount} possible pattern combinations.`;
-                    document.getElementById('patternCounter').textContent = 
-                        `Showing pattern ${currentPattern} of ${patternCount}. Click again for next pattern.`;
-                    document.getElementById('minuteApproximation').textContent = "";
+                    // 更新模式信息
+                    document.getElementById('modeInfo').textContent = 
+                        `This time has ${patternCount} possible patterns. Current: ${currentPattern}/${patternCount}`;
                 } else {
                     hourRegions = findFibonacciCombinationDeterministic(hour12);
                     minuteRegions = findFibonacciCombinationDeterministic(minuteBlocks);
-                    document.getElementById('patternInfo').textContent = "";
-                    document.getElementById('patternCounter').textContent = "";
-                    document.getElementById('minuteApproximation').textContent = "";
+                    document.getElementById('modeInfo').textContent = "";
                 }
             } else {
                 hourRegions = findFibonacciCombinationDeterministic(hour12);
                 minuteRegions = findFibonacciCombinationDeterministic(minuteBlocks);
-                document.getElementById('patternInfo').textContent = "";
-                document.getElementById('patternCounter').textContent = "";
-                
-                if (minutes % 5 !== 0) {
-                    document.getElementById('minuteApproximation').textContent = 
-                        `Actual minutes: ${minutes} → Rounded to: ${actualDisplayMinutes}`;
-                } else {
-                    document.getElementById('minuteApproximation').textContent = "";
-                }
+                document.getElementById('modeInfo').textContent = "";
             }
             
             const hourSum = hourRegions.reduce((sum, region) => sum + fibValues[region], 0);
@@ -609,7 +689,7 @@
             
             let remaining = target;
             const result = [];
-            const indicesBySize = [4, 3, 0, 1, 2]; // 5, 3, 2, 1, 1
+            const indicesBySize = [4, 3, 0, 1, 2];
             
             for (const index of indicesBySize) {
                 if (fibValues[index] <= remaining) {
@@ -652,6 +732,10 @@
             testMinutes = minutes;
             
             const timeKey = `${hours}:${minutes.toString().padStart(2, '0')}`;
+            currentTestTimeKey = timeKey;
+            
+            // 显示"下一个图案"按钮
+            document.getElementById('nextPatternBtn').style.display = 'inline-block';
             
             if (validCombinations[timeKey]) {
                 const hourOptions = validCombinations[timeKey].hours;
@@ -674,12 +758,35 @@
             });
             document.getElementById(`test${hours}`).classList.add('active');
             
-            document.getElementById('statusIndicator').textContent = "Test Mode - Click for Next Pattern";
-            document.getElementById('statusIndicator').className = "status-indicator test-mode";
+            document.getElementById('statusIndicator').textContent = "Test Time";
+            document.getElementById('statusIndicator').style.background = "rgba(168, 50, 62, 0.4)";
+            document.getElementById('statusIndicator').style.color = "#f0b6c1";
+        }
+        
+        function nextPattern() {
+            if (isTestMode && currentTestTimeKey && validCombinations[currentTestTimeKey]) {
+                const hourOptions = validCombinations[currentTestTimeKey].hours;
+                const minuteOptions = validCombinations[currentTestTimeKey].minutes;
+                
+                patternIndices[currentTestTimeKey].minute++;
+                if (patternIndices[currentTestTimeKey].minute >= minuteOptions.length) {
+                    patternIndices[currentTestTimeKey].minute = 0;
+                    patternIndices[currentTestTimeKey].hour++;
+                    if (patternIndices[currentTestTimeKey].hour >= hourOptions.length) {
+                        patternIndices[currentTestTimeKey].hour = 0;
+                    }
+                }
+                
+                updateClock();
+            }
         }
         
         function useRealTime() {
             isTestMode = false;
+            currentTestTimeKey = '';
+            
+            // 隐藏"下一个图案"按钮
+            document.getElementById('nextPatternBtn').style.display = 'none';
             
             document.querySelectorAll('.test-button').forEach(btn => {
                 btn.classList.remove('active');
@@ -687,11 +794,27 @@
             document.getElementById('realTimeBtn').classList.add('active');
             
             updateClock();
-            document.getElementById('statusIndicator').textContent = "Real Time Mode";
-            document.getElementById('statusIndicator').className = "status-indicator real-time";
-            document.getElementById('patternInfo').textContent = "";
-            document.getElementById('patternCounter').textContent = "";
-            document.getElementById('minuteApproximation').textContent = "";
+            document.getElementById('statusIndicator').textContent = "Real Time";
+            document.getElementById('statusIndicator').style.background = "rgba(45, 106, 79, 0.4)";
+            document.getElementById('statusIndicator').style.color = "#a3d9b1";
+            document.getElementById('modeInfo').textContent = "";
+        }
+        
+        function toggleDigitalTime() {
+            const digitalTimeElement = document.getElementById('digitalTime');
+            const toggleButton = document.getElementById('toggleTimeBtn');
+            
+            isDigitalTimeVisible = !isDigitalTimeVisible;
+            
+            if (isDigitalTimeVisible) {
+                digitalTimeElement.classList.remove('hidden');
+                toggleButton.textContent = "Hide Digital Time";
+                // 立即更新显示时间
+                updateClock();
+            } else {
+                digitalTimeElement.classList.add('hidden');
+                toggleButton.textContent = "Show Digital Time";
+            }
         }
         
         // Initialize clock
