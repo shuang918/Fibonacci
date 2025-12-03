@@ -562,30 +562,30 @@
 
     <script>
         // Fibonacci clock core JavaScript code
-        const fibValues = [2, 1, 1, 3, 5];
+        const fibValues = [2, 1, 1, 3, 5]; // 方块值：[square1=2, square2=1, square3=1, square4=3, square5=5]
         let isTestMode = false;
         let testHours = 0;
         let testMinutes = 0;
         let isDigitalTimeVisible = true;
         let currentTestTimeKey = '';
         
-        // 修正9:15的组合 - 小时应该是9，分钟应该是3（3×5=15分钟）
+        // 正确的组合 - 所有时间设置已验证
         const validCombinations = {
             "3:00": {
-                hours: [[0, 1], [0, 2], [3]],
-                minutes: [[]]
+                hours: [[0, 1], [0, 2], [3]],  // 3种小时组合：2+1=3, 2+1=3, 3=3
+                minutes: [[]]                   // 1种分钟组合：无分钟
             },
             "6:25": {
-                hours: [[4,1], [4,2], [0,3,1], [0,3,2]],
-                minutes: [[4], [0,3], [1,2,3]]
+                hours: [[4,1], [4,2], [0,3,1], [0,3,2]],  // 4种小时组合：5+1=6, 5+1=6, 2+3+1=6, 2+3+1=6
+                minutes: [[4], [0,3], [1,2,3]]             // 3种分钟组合：5=5, 2+3=5, 1+1+3=5
             },
             "9:15": {
-                hours: [[4,3], [4,0,1], [4,0,2], [0,3,1,2]],
-                minutes: [[3], [0,1], [0,2], [1,2]]
+                hours: [[4,3,1], [4,3,2], [4,0,1,2]],     // 3种小时组合：5+3+1=9, 5+3+1=9, 5+2+1+1=9
+                minutes: [[3], [0,1], [0,2]]               // 3种分钟组合：3=3, 2+1=3, 2+1=3
             },
             "12:00": {
-                hours: [[4,3,0,1,2]],
-                minutes: [[]]
+                hours: [[4,3,0,1,2]],                     // 1种小时组合：5+3+2+1+1=12
+                minutes: [[]]                              // 1种分钟组合：无分钟
             }
         };
         
@@ -624,7 +624,7 @@
             
             if (isTestMode) {
                 hour12 = testHours;
-                minuteBlocks = Math.round(testMinutes / 5); // 使用round而不是floor
+                minuteBlocks = Math.round(testMinutes / 5);
             } else {
                 hour12 = hours % 12 || 12;
                 minuteBlocks = Math.round(minutes / 5);
@@ -671,20 +671,6 @@
             const minuteSum = minuteRegions.reduce((sum, region) => sum + fibValues[region], 0);
             const displayMinutes = minuteSum * 5;
             
-            // 验证9:15的计算
-            if (isTestMode && testHours === 9 && testMinutes === 15) {
-                console.log(`9:15 Debug - hourRegions: ${hourRegions}, hourSum: ${hourSum}`);
-                console.log(`9:15 Debug - minuteRegions: ${minuteRegions}, minuteSum: ${minuteSum}, displayMinutes: ${displayMinutes}`);
-                
-                // 确保小时总和为9，分钟总和为3
-                if (hourSum !== 9) {
-                    console.warn(`Hour sum should be 9 but is ${hourSum}`);
-                }
-                if (minuteSum !== 3) {
-                    console.warn(`Minute sum should be 3 but is ${minuteSum}`);
-                }
-            }
-            
             const displayTime = isTestMode ? 
                 `${testHours}:${testMinutes.toString().padStart(2, '0')}` : 
                 `${hour12}:${minutes.toString().padStart(2, '0')}`;
@@ -702,7 +688,7 @@
             
             let remaining = target;
             const result = [];
-            const indicesBySize = [4, 3, 0, 1, 2];
+            const indicesBySize = [4, 3, 0, 1, 2]; // 从大到小：5,3,2,1,1
             
             for (const index of indicesBySize) {
                 if (fibValues[index] <= remaining) {
@@ -752,7 +738,7 @@
             // 显示"下一个图案"按钮
             document.getElementById('nextPatternBtn').style.display = 'inline-block';
             
-            // 如果这个时间有预定义组合，初始化索引
+            // 如果这个时间有预定义组合，确保索引存在
             if (validCombinations[timeKey] && !patternIndices[timeKey]) {
                 patternIndices[timeKey] = { hour: 0, minute: 0 };
             }
@@ -832,30 +818,10 @@
             }
         }
         
-        // 测试9:15的验证函数
-        function validate915() {
-            console.log("Validating 9:15 combinations...");
-            const hourOptions = validCombinations["9:15"].hours;
-            const minuteOptions = validCombinations["9:15"].minutes;
-            
-            hourOptions.forEach((hourRegions, hourIndex) => {
-                const hourSum = hourRegions.reduce((sum, region) => sum + fibValues[region], 0);
-                console.log(`Hour option ${hourIndex + 1}: ${hourRegions.map(r => fibValues[r]).join('+')} = ${hourSum}`);
-            });
-            
-            minuteOptions.forEach((minuteRegions, minuteIndex) => {
-                const minuteSum = minuteRegions.reduce((sum, region) => sum + fibValues[region], 0);
-                console.log(`Minute option ${minuteIndex + 1}: ${minuteRegions.map(r => fibValues[r]).join('+')} = ${minuteSum} (${minuteSum * 5} minutes)`);
-            });
-        }
-        
         // Initialize clock
         setInterval(updateClock, 1000);
         updateClock();
         document.getElementById('realTimeBtn').classList.add('active');
-        
-        // 验证9:15
-        validate915();
     </script>
 </body>
 </html>
